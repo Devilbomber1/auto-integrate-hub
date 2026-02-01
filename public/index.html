@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto-Integrate Hub</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 32px; background: #0b1320; color: #e0f2fe; }
+      h1 { margin-bottom: 4px; }
+      .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+      .card { background: #0f172a; border-radius: 12px; padding: 16px; }
+      .tag { display: inline-block; font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #1d4ed8; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { padding: 8px; border-bottom: 1px solid #1f2937; text-align: left; }
+    </style>
+  </head>
+  <body>
+    <h1>Auto-Integrate Hub</h1>
+    <p>Connector status and automation run history.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Connectors</h3>
+        <ul id="connectors"></ul>
+      </div>
+      <div class="card">
+        <h3>Recent Runs</h3>
+        <table>
+          <thead>
+            <tr><th>Connector</th><th>Status</th><th>Duration</th></tr>
+          </thead>
+          <tbody id="runs"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      async function load() {
+        const [connectorsRes, runsRes] = await Promise.all([
+          fetch('/api/connectors'),
+          fetch('/api/runs')
+        ]);
+        const connectors = await connectorsRes.json();
+        const runs = await runsRes.json();
+
+        document.getElementById('connectors').innerHTML = connectors.map(c => `
+          <li><span class="tag">${c.status}</span> ${c.name}</li>
+        `).join('');
+
+        document.getElementById('runs').innerHTML = runs.map(r => `
+          <tr>
+            <td>${r.connector_name || r.connector_id}</td>
+            <td>${r.status}</td>
+            <td>${r.duration_ms} ms</td>
+          </tr>
+        `).join('');
+      }
+      load();
+    </script>
+  </body>
+</html>

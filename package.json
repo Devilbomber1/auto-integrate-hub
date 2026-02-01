@@ -1,0 +1,14 @@
+{
+  "name": "auto-integrate-hub",
+  "version": "0.1.0",
+  "description": "Auto-Integrate Hub demo (Node.js + SQLite)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
+  }
+}
